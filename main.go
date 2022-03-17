@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 )
 
 func main() {
@@ -18,6 +19,8 @@ func main() {
 	for running {
 		fmt.Print("Enter city name: ")
 		text, _ := reader.ReadString('\n')
+
+		start := time.Now()
 
 		text = strings.Replace(text, "\r\n", "", -1)
 
@@ -36,6 +39,11 @@ func main() {
 
 		fmt.Printf("City: %s, Temperature: %f, Feels like: %f, Pressure: %f, Humidity: %f\n",
 			locationData.Name, response.Main.Temp, response.Main.FeelsLike, response.Main.Pressure, response.Main.Humidity)
+
+		elapsed := time.Since(start)
+
+		fmt.Printf("Elapsed: %dms\n", elapsed.Milliseconds())
+
 		fmt.Println("\nEnter 'exit' to exit next time")
 	}
 }
