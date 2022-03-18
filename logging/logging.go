@@ -5,55 +5,67 @@ import (
 	"time"
 )
 
-var currentLevel Level
+type LogLevel uint8
 
-func SetLogLevel(level Level) {
-	currentLevel = level
+const (
+	_ = iota
+	OFF
+	TRACE
+	FATAL
+	ERROR
+	WARN
+	INFO
+	DEBUG
+	ALL
+)
+
+type Logger struct {
+	Level LogLevel
 }
 
-func printMessage(message string) {
-	fmt.Printf("%s %s\n", time.Now().Format(time.RFC3339), message)
-}
-
-func Debug(message string) {
-	if currentLevel < DEBUG {
+func (logger Logger) Debug(message string) {
+	if logger.Level < DEBUG {
 		return
 	}
-	printMessage(message)
+	printMessage(message, "DEBUG")
 }
 
-func Info(message string) {
-	if currentLevel < INFO {
+func (logger Logger) Info(message string) {
+	if logger.Level < INFO {
 		return
 	}
-	printMessage(message)
+	printMessage(message, "INFO")
 }
 
-func Warn(message string) {
-	if currentLevel < WARN {
+func (logger Logger) Warn(message string) {
+	if logger.Level < WARN {
 		return
 	}
-	printMessage(message)
+	printMessage(message, "WARN")
 }
 
-func Error(message string) {
-	if currentLevel < ERROR {
+func (logger Logger) Error(message string) {
+	if logger.Level < ERROR {
 		return
 	}
-	printMessage(message)
+	printMessage(message, "ERROR")
 }
 
-func Fatal(message string) {
-	if currentLevel < FATAL {
+func (logger Logger) Fatal(message string) {
+	if logger.Level < FATAL {
 		return
 	}
-	printMessage(message)
+	printMessage(message, "FATAL")
 }
 
-func Trace(message string) {
-	if currentLevel < TRACE {
+func (logger Logger) Trace(message string) {
+	if logger.Level < TRACE {
 		return
 	}
 
-	printMessage(message)
+	printMessage(message, "TRACE")
+}
+
+func printMessage(message string, level string) {
+	fmt.Printf("[%s %s] %s\n", time.Now().Format(time.RFC3339), level, message)
 }
