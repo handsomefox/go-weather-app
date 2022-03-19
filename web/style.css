@@ -1,0 +1,70 @@
+* {
+  font-family: "Poppins", sans-serif;
+  font-size: 18pt;
+}
+
+body {
+  height: 100vh;
+  background: linear-gradient(
+          45deg,
+          rgb(1, 0, 22) 0%,
+          rgb(7, 60, 97) 50%,
+          rgb(8, 149, 201) 100%
+  );
+  color: white;
+}
+
+.header {
+  font-size: 30pt;
+  width: 30%;
+  margin: 0 auto;
+  text-align:center;
+  color: whitesmoke;
+  border-style: solid;
+  border-radius: 2.5rem;
+  border-color: whitesmoke;
+}
+
+.input-field{
+  width: 30%;
+  margin-top: 15%;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.input-city {
+  margin-top:8px;
+  width: 100%;
+  text-align: center;
+  border: 0;
+  outline: 0;
+  border-bottom: 2px solid #9b9b9b;
+  font-size: 1.2rem;
+  color: #fff;
+  padding: 7px 0;
+  background: transparent;
+  transition: border-color 0.1s;
+}
+
+.input-city:focus {
+  padding-bottom: 6px;
+  font-weight: 700;
+  border-image: linear-gradient(to right, #11998e, #38ef7d);
+  border-image-slice: 1;
+}
+
+.weather-information {
+  margin-top: 5%;
+  width: 25%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.img {
+  height: 100px;
+  width: 100px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}

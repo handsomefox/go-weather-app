@@ -67,5 +67,6 @@ func (logger Logger) Trace(message string) {
 }
 
 func printMessage(message string, level string) {
-	fmt.Printf("[%s %s] %s\n", time.Now().Format(time.RFC3339), level, message)
+	formatted := fmt.Sprintf("[%s %s] %s", time.Now().Format(time.RFC3339), level, message)
+	fmt.Println(formatted)
 }

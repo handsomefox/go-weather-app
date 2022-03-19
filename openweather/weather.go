@@ -9,9 +9,16 @@ import (
 	"net/http"
 )
 
-type Response struct {
-	Name string
-	Main Main `json:"main"`
+type Values struct {
+	Name    string
+	Main    Main
+	Weather Weather
+}
+
+type response struct {
+	Name    string
+	Main    Main      `json:"main"`
+	Weather []Weather `json:"weather"`
 }
 
 type Main struct {
@@ -24,12 +31,16 @@ type Main struct {
 }
 
 type Weather struct {
+	Icon string `json:"icon"`
+}
+
+type OpenWeather struct {
 	APIkey  string
 	Celsius bool
 	Debug   logging.LogLevel
 }
 
-func (weather Weather) Get(city string) (Response, error) {
+func (weather OpenWeather) Get(city string) (Values, error) {
 	logger := logging.Logger{
 		Level: weather.Debug,
 	}
@@ -37,7 +48,7 @@ func (weather Weather) Get(city string) (Response, error) {
 
 	if err != nil {
 		logger.Debug(err.Error())
-		return Response{}, errors.New("error fetching location data")
+		return Values{}, errors.New("error fetching location data")
 	}
 
 	request := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&appid=%s",
@@ -49,22 +60,22 @@ func (weather Weather) Get(city string) (Response, error) {
 
 	if err != nil {
 		logger.Debug(err.Error())
-		return Response{}, errors.New("error fetching openweather data")
+		return Values{}, errors.New("error fetching openweather data")
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
 		logger.Debug(err.Error())
-		return Response{}, errors.New("error reading response body")
+		return Values{}, errors.New("error reading response body")
 	}
 
-	var data Response
+	var data response
 	err = json.Unmarshal(body, &data)
 
 	if err != nil {
 		logger.Debug(err.Error())
-		return Response{}, errors.New("unmarshal error")
+		return Values{}, errors.New("unmarshal error")
 	}
 
 	if weather.Celsius {
@@ -74,8 +85,15 @@ func (weather Weather) Get(city string) (Response, error) {
 		data.Main.FeelsLike = kelvinToCelsius(data.Main.FeelsLike)
 	}
 
-	data.Name = locationData.Name
-	return data, nil
+	values := Values{
+		Name:    locationData.Name,
+		Main:    data.Main,
+		Weather: data.Weather[0],
+	}
+
+	values.Weather.Icon = fmt.Sprintf("http://openweathermap.org/img/wn/%s@2x.png", values.Weather.Icon)
+
+	return values, nil
 }
 
 type locationData struct {
@@ -85,7 +103,7 @@ type locationData struct {
 	Country string  `json:"country"`
 }
 
-func (weather Weather) fetchLocationData(cityName string) (locationData, error) {
+func (weather OpenWeather) fetchLocationData(cityName string) (locationData, error) {
 	logger := logging.Logger{
 		Level: weather.Debug,
 	}
